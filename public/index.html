@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="mk">
+<head>
+<meta charset="UTF-8">
+<title>Smart Menza</title>
+<style>
+body {
+  font-family: Arial;
+  background: #f4f4f4;
+  text-align: center;
+}
+
+h1 {
+  color: #333;
+}
+
+.container {
+  background: white;
+  padding: 20px;
+  margin: 20px auto;
+  width: 350px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px gray;
+}
+
+.meal {
+  margin: 10px 0;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+button {
+  margin-top: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.posno {
+  color: green;
+}
+
+.alert {
+  color: red;
+  font-weight: bold;
+}
+</style>
+</head>
+<body>
+
+<h1>🍽 Smart Menza</h1>
+
+<div class="container">
+  <label>
+    Ден:
+    <select id="daySelect" onchange="renderMeals()">
+      <option>Понеделник</option>
+      <option>Вторник</option>
+      <option>Среда</option>
+      <option>Четврток</option>
+      <option>Петок</option>
+      <option>Сабота</option>
+      <option>Недела</option>
+    </select>
+  </label>
+  <br><br>
+  <label>
+    <input type="checkbox" id="postam" onchange="renderMeals()"> Посно
+  </label>
+
+  <div id="meals"></div>
+</div>
+
+<script>
+let menu = {
+  "Понеделник": [
+    { name: "Пилешко", portions: 10, posno: false },
+    { name: "Ориз", portions: 8, posno: true }
+  ],
+  "Вторник": [
+    { name: "Свинско", portions: 12, posno: false },
+    { name: "Грав", portions: 6, posno: true }
+  ],
+  "Среда": [
+    { name: "Тестенини", portions: 9, posno: true },
+    { name: "Плескавица", portions: 7, posno: false }
+  ],
+  "Четврток": [
+    { name: "Риба", portions: 11, posno: false },
+    { name: "Компир", portions: 5, posno: true }
+  ],
+  "Петок": [
+    { name: "Пица", portions: 10, posno: false },
+    { name: "Салата", portions: 7, posno: true }
+  ],
+  "Сабота": [
+    { name: "Бурек", portions: 15, posno: false },
+    { name: "Зелка", portions: 6, posno: true }
+  ],
+  "Недела": [
+    { name: "Скара", portions: 13, posno: false },
+    { name: "Грав посен", portions: 8, posno: true }
+  ]
+};
+
+function renderMeals() {
+  let container = document.getElementById("meals");
+  let postam = document.getElementById("postam").checked;
+  let day = document.getElementById("daySelect").value;
+
+  container.innerHTML = "";
+
+  menu[day].forEach((meal, index) => {
+    if (!postam || meal.posno) {
+      let div = document.createElement("div");
+      div.className = "meal";
+
+      div.innerHTML = `
+        <strong>${meal.name}</strong> 
+        ${meal.posno ? '<span class="posno">(посно)</span>' : ''}
+        <br>
+        Порции: ${meal.portions}
+        <br>
+        <button onclick="takeMeal('${day}', ${index})">Земи порција</button>
+        ${meal.portions <= 3 ? '<div class="alert">МАЛКУ ПОРЦИИ!</div>' : ''}
+      `;
+
+      container.appendChild(div);
+    }
+  });
+}
+
+function takeMeal(day, index) {
+  if (menu[day][index].portions > 0) {
+    menu[day][index].portions--;
+  } else {
+    alert("Нема повеќе порции!");
+  }
+  renderMeals();
+}
+
+// При првично вчитување
+renderMeals();
+</script>
+
+</body>
+</html>
